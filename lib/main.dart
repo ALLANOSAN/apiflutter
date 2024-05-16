@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       // Oculta o banner "debug"
       debugShowCheckedModeBanner: false,
-      title: 'Meu Aplicativo de Usuários',      
+      title: 'Meu Aplicativo de Usuários',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blue),
         scaffoldBackgroundColor: Colors.white,
@@ -162,13 +162,13 @@ class UserListScreenState extends State<UserListScreen> {
         pictureController.text.isNotEmpty) {
       userService
           .createUser(User(
-            id: '',
-            title: tituloController.text,
-            firstName: firstnameController.text,
-            lastName: lastnameController.text,
-            email: emailController.text,
-            picture: pictureController.text,
-          ))
+        id: '',
+        title: tituloController.text,
+        firstName: firstnameController.text,
+        lastName: lastnameController.text,
+        email: emailController.text,
+        picture: pictureController.text,
+      ))
           .then((newUser) {
         _showSnackbar('Usuário adicionado com sucesso!');
         _refreshUserList();
@@ -227,8 +227,7 @@ class UserListScreenState extends State<UserListScreen> {
               ),
               TextFormField(
                 controller: pictureController,
-                decoration:
-                    const InputDecoration(labelText: 'URL da Foto'),
+                decoration: const InputDecoration(labelText: 'URL da Foto'),
               ),
             ],
           ),

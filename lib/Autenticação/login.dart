@@ -27,14 +27,17 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 // Login
 
-                Image.asset("images/login.png"),
+                //Antes de mostrarmos a imagem, depois de copiarmos a imagem, precisamos definir a localização em pubspec.yaml
+                Image.asset("images/login.png", width: 210,
+                ),
+                const SizedBox(height: 15),
                 Container(
                   margin: EdgeInsets.all(8),
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
-                      color: Colors.deepPurple.withOpacity(.3)),
+                      color: Colors.deepPurple.withOpacity(.2)),
                   child: TextFormField(
                     decoration: const InputDecoration(
                       icon: Icon(Icons.person),
@@ -48,10 +51,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 Container(
                   margin: EdgeInsets.all(8),
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
-                      color: Colors.deepPurple.withOpacity(.3)),
+                      color: Colors.deepPurple.withOpacity(.2)),
                   child: TextFormField(
                     obscureText: !seVisivel,
                     decoration: InputDecoration(
@@ -71,6 +74,20 @@ class _LoginScreenState extends State<LoginScreen> {
                                 : Icons.visibility_off))),
                   ),
                 ),
+
+                // Botão de login
+                Container(
+                  height: 60,
+                  width: MediaQuery.of(context).size.width* .9,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.deepPurple,
+                  ),
+                  child: TextButton(
+                    onPressed: (){},
+                   child: const Text("LOGIN" , style: TextStyle(color: Colors.white)
+                   )),
+                )
               ],
             ),
           ),

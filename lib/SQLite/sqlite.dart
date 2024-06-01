@@ -1,8 +1,8 @@
-import 'package:apiflutter/JsonModels/user.dart';
+import 'package:getxtutorial6sqlitetodo/JsonModels/user.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-class DatabaseHelper {
+class DatabaseHelper2 {
   final databasename = "notes.db";
   String usuarios = 
   "CREATE TABLE usuarios (usrid INTEGER PRIMARY KEY AUTOINCREMENT, usrName TEXT UNIQUE, usrSenha TEXT)";

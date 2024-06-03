@@ -1,11 +1,13 @@
 import 'package:get/get.dart';
 import 'package:getxtutorial6sqlitetodo/app/data/model/note_model.dart';
+import 'package:logging/logging.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 class NotesService extends GetxService {
   //o banco de dados declarado como late sera inicializado na primeira leitura
   late Database db;
+  final Logger _logger = Logger('NotesService');
 
   Future<NotesService> init() async {
     db = await _getDatabase();
@@ -29,7 +31,7 @@ class NotesService extends GetxService {
     // await deleteDatabase(path);
     // Retorna o banco de dados aberto
     return db = await openDatabase(
-      join(databasesPath, 'notes.db'),
+     join(databasesPath, 'notes.db'),
       onCreate: (db, version) {
         return db.execute(
             'CREATE TABLE notes (id INTEGER PRIMARY KEY, title TEXT, content TEXT)');
@@ -41,7 +43,7 @@ class NotesService extends GetxService {
   // recuperar todas as notas
   Future<List<Note>> getAll() async {
     final result = await db.rawQuery('SELECT * FROM notes ORDER BY id');
-    print(result);
+    _logger.info(result);
     return result.map((json) => Note.fromJson(json)).toList();
   }
 
@@ -51,7 +53,7 @@ class NotesService extends GetxService {
         'INSERT INTO notes (title, content) VALUES (?,?)',
         [note.title, note.content]);
 
-    print(id);
+    _logger.info(id);
     return note.copy(id: id);
   }
 
@@ -61,7 +63,7 @@ class NotesService extends GetxService {
         'UPDATE notes SET title = ?, content = ? WHERE id = ?',
         [note.title, note.content, note.id]);
 
-    print(id);
+    _logger.info(id);
     return note.copy(id: id);
   }
 
@@ -69,7 +71,7 @@ class NotesService extends GetxService {
   Future<int> delete(int noteId) async {
     final id = await db.rawDelete('DELETE FROM notes WHERE id = ?', [noteId]);
 
-    print(id);
+    _logger.info(id);
     return id;
   }
 

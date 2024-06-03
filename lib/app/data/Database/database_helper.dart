@@ -1,16 +1,53 @@
 import 'package:getxtutorial6sqlitetodo/JsonModels/user.dart';
-import 'package:getxtutorial6sqlitetodo/app/data/model/note_model.dart';
+import 'package:getxtutorial6sqlitetodo/jsonModels/note_model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-class DatabaseHelper {
-  static final DatabaseHelper instance = DatabaseHelper._instance();
-  static Database? _db;
+class DatabaseNotes {
+  DatabaseNotes._();
+  static final DatabaseNotes instance = DatabaseNotes._();
+  static Database? _database;
 
-  DatabaseHelper._instance();
+get database async {
+  if (_database != null) return _database; 
 
-  String notesTable = 'note_table';
-  int colId = 'id' as int;
+
+  return await _initDatabase();
+}
+
+
+_initDatabase() async {
+  return await openDatabase(
+    join(await getDatabasesPath(), 'notes.db'),
+    version: 1,
+    onCreate: _onCreate,
+  );
+}
+
+_onCreate(db, versao) async {
+  await db.execute(notesTable);
+  await db.execute(usuariosTable);
+} 
+
+String get notesTable => '''
+  CREATE TABLE tabeladenotas (
+    $colId INTEGER PRIMARY KEY AUTOINCREMENT,
+    $colTitle TEXT,
+    $colContent TEXT,
+  );
+''';
+
+String get usuariosTable => '''
+  CREATE TABLE tabelausuarios (
+    $colId2 INTEGER PRIMARY KEY AUTOINCREMENT,
+    $colUsername TEXT,
+    $colPassword TEXT,
+  );
+''';
+  
+
+  
+  String colId = 'id';
   String colTitle = 'title';
   String colContent = 'content';
   String colStartDate = 'startDate';
@@ -18,56 +55,60 @@ class DatabaseHelper {
   String colEndDate = 'endDate';
   String colEndTime = 'endTime';
 
-  String usuariosTable = 'user_table';
-  String colUsername = 'Usuario';
-  String colPassword = 'Senha';
+  
+  String colId2 = 'usrId';
+  String colUsername = 'usrNome';
+  String colPassword = 'usrSenha';
 
-  Future<Database> get db async {
-    if (_db == null) {
-      _db = await _initDb();
-    }
-    return _db!;
+  
+
+  Future<Database> _initDb(String filePath) async {
+    print('Iniciando banco de dados...');
+    String dbPath = await getDatabasesPath();
+    final path =  join(dbPath, filePath );
+     print('Banco de dados iniciado.');
+    return await openDatabase(path, version: 1, onCreate: _createDb );
   }
 
-  Future<Database> _initDb() async {
-    String path = join(await getDatabasesPath(), 'notes.db');
-    final notesDb = await openDatabase(path, version: 1, onCreate: _createDb);
-    return notesDb;
-  }
+  void _createDb(Database database, int version) async {
+    print('Criando tabela $notesTable...');
+    await database.execute('''
+      CREATE TABLE $notesTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, $colContent TEXT, $colStartDate TEXT, $colStartTime TEXT, $colEndDate TEXT, $colEndTime TEXT)
+    ''');
+    print('Tabela $notesTable criada.');
 
-  void _createDb(Database db, int version) async {
-    await db.execute(
-      'CREATE TABLE $notesTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, $colContent TEXT, $colStartDate TEXT, $colStartTime TEXT, $colEndDate TEXT, $colEndTime TEXT)',
-    );
-    await db.execute(
-      'CREATE TABLE $usuariosTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colUsername TEXT, $colPassword TEXT)',
-    );
+    print('Criando tabela $usuariosTable...');
+    await database.execute('''
+      CREATE TABLE $usuariosTable($colId2 INTEGER PRIMARY KEY AUTOINCREMENT, $colUsername TEXT, $colPassword TEXT)
+    ''');
+    print('Tabela $usuariosTable criada.');
   }
 
   Future<List<Map<String, dynamic>>> getNoteMapList() async {
-    Database db = await this.db;
+    final db = await instance.database;
     final List<Map<String, dynamic>> result = await db.query(notesTable);
     return result;
   }
 
   Future<List<Note>> getNoteList() async {
-    final List<Map<String, dynamic>> noteMapList = await getNoteMapList();
-    final List<Note> noteList = [];
-    noteMapList.forEach((noteMap) {
-      noteList.add(Note.fromJson(noteMap));
-    });
-    return noteList;
+  final List<Map<String, dynamic>> noteMapList = await getNoteMapList();
+  final List<Note> noteList = [];
+  for (var noteMap in noteMapList) {
+    noteList.add(Note.fromJson(noteMap));
   }
+  return noteList;
+}
 
-  Future<int> insert(Note note) async {
-    Database db = await this.db;
-    final int result = await db.insert(notesTable, note.toJson());
-    return result;
+
+  Future<Note> insert(Note note) async {
+    final db = await instance.database;   
+    final id = await db.insert(notesTable, note.toJson());
+    return note.copy(id: id);
   }
 
   Future<int> update(Note note) async {
-    Database db = await this.db;
-    final int result = await db.update(
+    final db = await instance.database;
+    final result = await db.update(
       notesTable,
       note.toJson(),
       where: '$colId = ?',
@@ -77,8 +118,8 @@ class DatabaseHelper {
   }
 
   Future<int> delete(int id) async {
-    Database db = await this.db;
-    final int result = await db.delete(
+    final db = await instance.database;
+    final result = await db.delete(
       notesTable,
       where: '$colId = ?',
       whereArgs: [id],
@@ -87,13 +128,13 @@ class DatabaseHelper {
   }
 
   Future<int> saveUser(Usuarios usuario ) async {
-    Database db = await this.db;
-    final int result = await db.insert(usuariosTable, usuario.toMap());
+    final db = await instance.database;
+    final result = await db.insert(usuariosTable, usuario.toMap());
     return result;
   }
 
   Future<bool> login(Usuarios usuario) async {
-    Database db = await this.db;
+    final db = await instance.database;
     final List<Map<String, dynamic>> result = await db.query(
       usuariosTable,
       where: '$colUsername = ? AND $colPassword = ?',
@@ -101,4 +142,11 @@ class DatabaseHelper {
     );
     return result.isNotEmpty;
   }
+
+  Future close() async {
+    final db = await instance.database;
+    db.close();
+  }
 }
+
+

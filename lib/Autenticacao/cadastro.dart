@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getxtutorial6sqlitetodo/JsonModels/user.dart';
-import 'package:getxtutorial6sqlitetodo/app/data/database/database_helper.dart' as db1;
+import 'package:getxtutorial6sqlitetodo/app/data/Database/database_helper.dart';
 import 'package:getxtutorial6sqlitetodo/app/modules/authentication/login.dart';
 
 
@@ -131,10 +131,9 @@ class CadastroState extends State<Cadastro> {
                     width: MediaQuery.of(context).size.width * .9,
                     child: ElevatedButton(
                       onPressed: () async {
-                        if (formKey.currentState!.validate()) {
-                          var db = db1.DatabaseHelper.instance;
+                        if (formKey.currentState!.validate()) {                          
                           var newUser = Usuarios(usrNome: usuario.text, usrSenha: senha.text);
-                          await db.saveUser(newUser);
+                          await DatabaseNotes.instance.saveUser(newUser);
                           Get.snackbar('Sucesso', 'Usuário cadastrado com sucesso',
                               snackPosition: SnackPosition.BOTTOM,
                               backgroundColor: Colors.green,

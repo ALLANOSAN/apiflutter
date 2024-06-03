@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getxtutorial6sqlitetodo/Autenticacao/cadastro.dart';
 import 'package:getxtutorial6sqlitetodo/JsonModels/user.dart';
-import 'package:getxtutorial6sqlitetodo/SQLite/sqlite.dart';
+import 'package:getxtutorial6sqlitetodo/app/data/Database/database_helper.dart';
 import 'package:getxtutorial6sqlitetodo/app/modules/notes/note_list_page.dart';
 
 
@@ -18,14 +18,14 @@ class _LoginScreenState extends State<LoginScreen> {
   final senha = TextEditingController();
   bool seVisivel = false;
   bool seLoginVerdadeiro = false;
-  final db = DatabaseHelper2();
+  final db = DatabaseNotes.instance;
   final formKey = GlobalKey<FormState>();
 
   login() async {
     var response = await db.login(Usuarios(usrNome: usuario.text, usrSenha: senha.text));
     if (response == true) {
       if (!mounted) return;
-      Get.off(() => const NoteListPage());
+      Get.to(() => const NoteListPage());
     } else {
       setState(() {
         seLoginVerdadeiro = true;

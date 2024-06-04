@@ -1,16 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:getxtutorial6sqlitetodo/app/db/notes_service.dart';
-import 'package:getxtutorial6sqlitetodo/splashscreen.dart';
-import 'package:logging/logging.dart';
+import 'screens/splash_screen.dart';
 
-void main() async {
-  Logger.root.level = Level.ALL; // logs everything
-  Logger.root.onRecord.listen((record) {
-    print('${record.level.name}: ${record.time}: ${record.message}');
-  });
-  WidgetsFlutterBinding.ensureInitialized();
-  await Get.putAsync(() => NotesService().init());
+void main() {
   runApp(const MyApp());
 }
 
@@ -21,11 +13,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'GetX SQLite Tutorial',
+      title: 'Flutter ToDo App',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
       ),
-      home: const SplashScreen(), // Use a splash screen
+      home: const SplashScreen(),
     );
   }
 }

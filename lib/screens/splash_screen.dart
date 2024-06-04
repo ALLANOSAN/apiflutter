@@ -1,7 +1,8 @@
+// lib/screens/splash_screen.dart
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 import 'package:get/get.dart';
-import 'package:getxtutorial6sqlitetodo/app/modules/authentication/login.dart';
+import 'login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -18,8 +19,8 @@ class SplashScreenState extends State<SplashScreen> {
   }
 
   _navigateToLogin() async {
-    await Future.delayed(const Duration(seconds: 3), () {}); // Tempo de exibição da splash screen
-    Get.to(const LoginScreen());
+    await Future.delayed(const Duration(seconds: 5), () {}); // Tempo de exibição da splash screen
+    Get.to(() => const LoginScreen());
   }
 
   @override

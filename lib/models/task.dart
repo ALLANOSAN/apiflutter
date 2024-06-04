@@ -3,7 +3,8 @@ class Task {
   String title;
   String? description;
   String dueDate;
-  int isCompleted;
+  bool
+      isCompleted; // Alterando para bool para representar um estado verdadeiro/falso
 
   Task({
     this.id,
@@ -14,16 +15,15 @@ class Task {
   });
 
   Map<String, dynamic> toMap() {
-    var map = <String, dynamic>{
+    return {
+      'id': id,
       'title': title,
       'description': description,
       'dueDate': dueDate,
-      'isCompleted': isCompleted,
+      'isCompleted': isCompleted
+          ? 1
+          : 0, // Convertendo para int (0 ou 1) ao salvar no banco
     };
-    if (id != null) {
-      map['id'] = id;
-    }
-    return map;
   }
 
   factory Task.fromMap(Map<String, dynamic> map) {
@@ -32,7 +32,7 @@ class Task {
       title: map['title'],
       description: map['description'],
       dueDate: map['dueDate'],
-      isCompleted: map['isCompleted'],
+      isCompleted: map['isCompleted'] == 1, // Convertendo de int para bool
     );
   }
 }

@@ -54,6 +54,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
                 Task task = snapshot.data![index];
+                
                 return Dismissible(
                   key: Key(task.id.toString()),
                   background: Container(color: Colors.red),
